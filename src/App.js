@@ -7,108 +7,112 @@ import framImage from './Fram.png';
 
 class App extends Component {
   state = {
-    //oui j'ai zappé l'api pour les mots, j'ai pas eu le temps de le faire
     wordscall: ["bonjour", "salut", "coucou", "hello", "hi", "hola", "ciao", "hallo", "ola", "nihao", "konichiwa", "namaste", "salaam", "sawubona", "jambo", "merhaba", "privet", "shalom", "desole", "voisin"],
-    currentWord: null,
-    alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().split(""),
-    usedletters: [],
-    win:0, // 0: en cours, 1: gagné
-    attempts: 9
+    currentWord: null, // Mot à deviner
+    alphabet: "ABCDEFGHIJKLMNOPQRSTUVWXYZ".toLowerCase().split(""), // Alphabet minuscules
+    usedletters: [], // Lettres déjà utilisées
+    win: 0, // 0: en cours, 1: gagné
+    attempts: 9 // Nombre d'essais restants
   }
 
   componentDidMount() {
-    window.addEventListener("keyup", (e) =>{
-      if(e.keyCode == 13){
-        this.initGame()
+    // Ajoute un écouteur pour redémarrer le jeu avec la touche "Entrée"
+    window.addEventListener("keyup", (e) => {
+      if (e.keyCode === 13) {
+        this.initGame();
       }
-      console.log(e)
-    })  
-    this.initGame()
+      console.log(e);
+    });
+    this.initGame(); // Initialise le jeu au chargement
   }
 
   clickLetter = (letter) => {
-    console.log("=>" + letter)
-    //verifier si la lettre est dans le mot
-    if (this.state.usedletters.indexOf(letter)=== -1) {
+    console.log("=>" + letter);
 
-      let attempts = this.state.attempts
-      const usedletters = [letter, ...this.state.usedletters]
+    // Vérifie si la lettre n'a pas encore été utilisée
+    if (this.state.usedletters.indexOf(letter) === -1) {
+      let attempts = this.state.attempts;
+      const usedletters = [letter, ...this.state.usedletters];
 
+      // Si la lettre n'est pas dans le mot, décrémente les essais
       if (this.state.currentWord.indexOf(letter) === -1) {
-        attempts = this.state.attempts - 1
-        this.setState({usedletters, attempts}) //att
-      }else {
-        this.setState({usedletters})
+        attempts = this.state.attempts - 1;
+        this.setState({ usedletters, attempts });
+      } else {
+        this.setState({ usedletters });
       }
 
-      let win = 1
-      for(let i = 0; i < this.state.currentWord.length; i++) {
-        if (usedletters.indexOf(this.state.currentWord[i]) == -1) {
-          win = 0
+      // Vérifie si toutes les lettres du mot ont été trouvées
+      let win = 1;
+      for (let i = 0; i < this.state.currentWord.length; i++) {
+        if (usedletters.indexOf(this.state.currentWord[i]) === -1) {
+          win = 0;
         }
       }
-      this.setState({win})
-      // if (attempts === 0 && win === 0) {
-      //   win = -1
-      // }
-
-
+      this.setState({ win });
     } else {
-      console.log("lettre déjà utilisée")
+      console.log("lettre déjà utilisée");
     }
   }
 
   initGame = () => {
-    this.setState({currentWord: this.state.wordscall[Math.floor(Math.random() * this.state.wordscall.length)], usedletters: [], win:0, attempts: 9})
+    // Réinitialise le jeu avec un nouveau mot et les paramètres par défaut
+    this.setState({
+      currentWord: this.state.wordscall[Math.floor(Math.random() * this.state.wordscall.length)],
+      usedletters: [],
+      win: 0,
+      attempts: 9
+    });
   }
 
-  //
-  render () {
-    if (this.state.attempts<=0){
+  render() {
+    // Affiche l'écran de défaite si les essais sont épuisés
+    if (this.state.attempts <= 0) {
       return (
         <div id="game">
           <h1>BAAHAHAHAHAHAHA T'AS PERDU</h1>
-          <button onClick={this.initGame}>rejouer</button> <br/>
+          <button onClick={this.initGame}>rejouer</button> <br />
           <img src={frameImage} alt=""></img>
-          <p>(ps: soyez indulugent monsieur, on est voisin et c'est mon bientot mon anniversaire 😅)</p>
+          <p>(ps: soyez indulgent, c'est mon premier projet react :D)</p>
         </div>
-      )
+      );
     }
-    if (this.state.win === 1){
+
+    // Affiche l'écran de victoire si le joueur a gagné
+    if (this.state.win === 1) {
       return (
         <div id="game">
           <h1>bien joué bro 🗿</h1>
-          <button onClick={this.initGame}>rejouer</button> <br/>
-          <img src={framImage} alt=""></img><br/>
-          <p>(ps: soyez indulugent monsieur, on est voisin et c'est mon bientot mon anniversaire 😅)</p>
+          <button onClick={this.initGame}>rejouer</button> <br />
+          <img src={framImage} alt=""></img><br />
+          <p>(ps: soyez indulgent, c'est mon premier projet react :D)</p>
         </div>
-      )
+      );
     }
-    
-    //
+
+    // Affiche l'écran principal du jeu
     return (
       <div id="game">
         <h1>bienvenido dans ce jeu du pendu</h1>
-        essaies: {this.state.attempts} <br/>
-        victoir: {this.state.win} <br/>
-        pour commencer appuyer sur entrer <br/>
-        
+        essaies: {this.state.attempts} <br />
+        victoir: {this.state.win} <br />
+        pour commencer appuyer sur entrer <br />
+
         {
-          (this.state.currentWord !== null) && 
-            <CurrentWord 
-              currentWord={this.state.currentWord} 
-              usedletters={this.state.usedletters}
-            />
+          // Affiche le mot actuel si le jeu a commencé
+          (this.state.currentWord !== null) &&
+          <CurrentWord
+            currentWord={this.state.currentWord}
+            usedletters={this.state.usedletters}
+          />
         }
 
-
-        <Keyboard 
+        <Keyboard
           alphabet={this.state.alphabet}
           action={this.clickLetter}
         />
       </div>
-      
-    )
+    );
   }
 }
 

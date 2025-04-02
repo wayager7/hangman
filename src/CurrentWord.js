@@ -1,25 +1,28 @@
-import React, { Component } from 'react';
+import React from 'react';
 import './App.css';
 
-const CurrentWord = ({currentWord, usedletters}) => {
-    // console.log(alphabet)
+const CurrentWord = ({ currentWord, usedletters }) => {
     return (
         <div>
             {
-                currentWord.split("").map(
-                    (letter, key) => {
-                        let status = "finded"
-                        if (usedletters.indexOf(letter) == -1){
-                            status = "notfinded"
-                        }
-                        return <span key={"letter_"+key} className={status}>
-                            {status == "finded" ? letter : "_"}
-                        </span>
+                // Parcourt chaque lettre du mot actuel
+                currentWord.split("").map((letter, key) => {
+                    // Détermine si la lettre a été trouvée ou non
+                    let status = "finded";
+                    if (usedletters.indexOf(letter) === -1) {
+                        status = "notfinded";
                     }
-                )
+
+                    // Affiche la lettre si elle a été trouvée, sinon affiche un "_"
+                    return (
+                        <span key={"letter_" + key} className={status}>
+                            {status === "finded" ? letter : "_"}
+                        </span>
+                    );
+                })
             }
         </div>
-    )
+    );
 }
 
 export default CurrentWord;
